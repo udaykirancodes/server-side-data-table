@@ -1,11 +1,15 @@
-import { columns } from "@/components/columns";
-import { DataTable } from "@/components/data-table";
-import { data } from "@/data/tasks";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-export default function Home() {
+export default function Page() {
   return (
-    <div className="w-full h-full p-10">
-      <DataTable data={data} columns={columns} />
+    <div className="flex h-screen w-screen items-center justify-center">
+      <Button variant="link" size="lg">
+        <Link href="/server">Server</Link>
+      </Button>
+      <Button variant="link" size="lg">
+        <Link href="/client">Client</Link>
+      </Button>
     </div>
   );
 }

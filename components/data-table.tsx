@@ -3,6 +3,7 @@
 import {
   ColumnDef,
   ColumnFiltersState,
+  PaginationState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -25,39 +26,76 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@/hooks/use-table-state";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  rowCount: number;
+
+  pagination: PaginationState;
+  setPagination: React.Dispatch<React.SetStateAction<PaginationState>>;
+
+  sorting: SortingState;
+  setSorting: React.Dispatch<React.SetStateAction<SortingState>>;
+
+  columnFilters: ColumnFiltersState;
+  setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>;
+
+  serverSideHandling: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  rowCount,
+  pagination,
+  setPagination,
+  sorting,
+  setSorting,
+  columnFilters,
+  setColumnFilters,
+  serverSideHandling = true,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
     data,
     columns,
+    initialState: {
+      pagination: {
+        pageIndex: DEFAULT_PAGE_INDEX,
+        pageSize: DEFAULT_PAGE_SIZE,
+      },
+      sorting: [],
+    },
     state: {
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
+      pagination: pagination,
     },
+
+    // pagination
+    manualPagination: serverSideHandling ? true : false,
+    onPaginationChange: setPagination,
+    rowCount: serverSideHandling ? rowCount : data.length,
+
+    // sorting
+    manualSorting: serverSideHandling ? true : false,
+    onSortingChange: setSorting,
+
+    // filters
+    manualFiltering: serverSideHandling ? true : false,
+    onColumnFiltersChange: setColumnFilters,
+
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
