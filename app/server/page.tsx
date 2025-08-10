@@ -3,7 +3,7 @@
 import { columns } from "@/components/columns";
 import { DataTable } from "@/components/data-table";
 import { useTableState } from "@/hooks/use-table-state";
-import { useMutation } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 export default function Home() {
@@ -18,13 +18,10 @@ export default function Home() {
     getState,
   } = useTableState();
 
-  const {
-    data: response,
-    isSuccess,
-    mutate: refetch,
-  } = useMutation({
-    mutationKey: ["tasks/server", remoteUpdateRequest],
-    mutationFn: async () => {
+  const { data: response, refetch } = useQuery({
+    queryKey: ["tasks/server"],
+    placeholderData: keepPreviousData,
+    queryFn: async () => {
       const response = await fetch("/api/server", {
         method: "POST",
         headers: {
@@ -41,16 +38,16 @@ export default function Home() {
     },
   });
 
+  const data = response?.items || [];
+
   useEffect(() => {
     refetch();
   }, [remoteUpdateRequest]);
 
-  if (!isSuccess) return <div>Loading...</div>;
-
   return (
     <div className="w-full h-full p-10">
       <DataTable
-        data={response?.items || []}
+        data={data}
         columns={columns}
         rowCount={response?.total_count || 0}
         setPagination={setPagination}

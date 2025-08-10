@@ -25,7 +25,7 @@ export const useTableState = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   // listen to the changes
-  useChange([pagination, sorting, columnFilters], () => {
+  useChange([pagination, sorting], () => {
     // if there are any changes then change remoteUpdateRequest
     setRemoteUpdateRequest((prev) => !prev);
   });
@@ -44,12 +44,12 @@ export const useTableState = () => {
   //     });
   //   }, [columnFilters, setPagination]);
 
-  //   useChange([columnFilters], () => {
-  //     setPagination({
-  //       pageIndex: DEFAULT_PAGE_INDEX,
-  //       pageSize: pagination.pageSize,
-  //     });
-  //   });
+  useChange([columnFilters], () => {
+    setPagination({
+      pageIndex: DEFAULT_PAGE_INDEX,
+      pageSize: pagination.pageSize,
+    });
+  });
 
   const getState = () => {
     return {
