@@ -10,14 +10,13 @@ export default function Home() {
   const {
     pagination,
     setPagination,
-    remoteUpdateRequest,
     sorting,
     setSorting,
     columnFilters,
     setColumnFilters,
   } = useTableState();
 
-  const { data: response, isLoading } = useQuery({
+  const { data: response } = useQuery({
     queryKey: ["tasks/client"],
     queryFn: async () => {
       const response = await fetch("/api/client");

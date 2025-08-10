@@ -23,12 +23,6 @@ interface RequestBody {
   }[];
 }
 
-// Define the shape of API response
-interface ResponseBody {
-  items: Task[];
-  total_count: number;
-}
-
 import { data } from "@/data/tasks";
 import { NextRequest } from "next/server";
 
@@ -44,10 +38,8 @@ export async function POST(request: NextRequest) {
     for (const filter of columnFilters) {
       const { id, value } = filter;
       if (Array.isArray(value)) {
-        // @ts-ignore
         filtered = filtered.filter((item) => value.includes(item[id]));
       } else {
-        // @ts-ignore
         filtered = filtered.filter((item) => item[id] === value);
       }
     }
@@ -59,9 +51,7 @@ export async function POST(request: NextRequest) {
   if (sorting?.length > 0) {
     const { id: sortKey, desc } = sorting[0];
     filtered.sort((a, b) => {
-      // @ts-ignore
       const aVal = a[sortKey];
-      // @ts-ignore
       const bVal = b[sortKey];
 
       if (aVal < bVal) return desc ? 1 : -1;

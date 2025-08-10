@@ -15,7 +15,6 @@ export default function Home() {
     setSorting,
     columnFilters,
     setColumnFilters,
-    getState,
   } = useTableState();
 
   const { data: response, refetch } = useQuery({
